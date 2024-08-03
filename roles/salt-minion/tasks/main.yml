@@ -1,0 +1,29 @@
+---
+- name: Upload minion bundle
+  copy:
+    src: "{{ minion_bundle_path }}"
+    dest: /tmp/minion_bundle.tar.gz
+
+- name: Extract minion bundle
+  unarchive:
+    src: /tmp/minion_bundle.tar.gz
+    dest: /opt/saltstack
+    remote_src: yes
+
+- name: Install Salt minion from the bundle
+  shell: |
+    cd /opt/saltstack
+    ./install.sh
+
+- name: Configure Salt minion
+  template:
+    src: minion.j2
+    dest: /etc/salt/minion
+  notify:
+    - Restart salt-minion
+
+- name: Start and enable Salt minion service
+  service:
+    name: salt-minion
+    state: started
+    enabled: yes

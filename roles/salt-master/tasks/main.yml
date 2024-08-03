@@ -1,0 +1,24 @@
+---
+- name: Install Salt master
+  yum:
+    name: salt-master
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Start and enable Salt master service
+  service:
+    name: salt-master
+    state: started
+    enabled: yes
+
+- name: Configure Salt master
+  template:
+    src: master.j2
+    dest: /etc/salt/master
+  notify:
+    - Restart salt-master
+
+- name: Ensure Salt master is running
+  service:
+    name: salt-master
+    state: started

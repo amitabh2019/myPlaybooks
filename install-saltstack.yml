@@ -1,0 +1,10 @@
+---
+- hosts: salt-master
+  become: yes
+  roles:
+    - salt-master
+
+- hosts: salt-minions
+  become: yes
+  roles:
+    - salt-minion
